@@ -8,8 +8,6 @@ using json = nlohmann::json;
 int main(int, char**)
 {
     CustomGame game("Joc");
-    ImVec4 bkg_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
-    bool done = false;
 
     try {
         game.Init_SDL2_ImGUI();
