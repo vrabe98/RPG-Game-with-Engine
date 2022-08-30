@@ -1,5 +1,10 @@
 #include "RenderContext.h"
 
+RenderContext::RenderContext() {
+    window = nullptr;
+    renderer = nullptr;
+}
+
 RenderContext::RenderContext(SDL_Window* window, SDL_Renderer* renderer, ImFont* font)
 {
 	this->window = window;

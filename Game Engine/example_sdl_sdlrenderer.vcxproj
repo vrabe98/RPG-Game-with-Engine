@@ -167,6 +167,7 @@
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="RenderContext.cpp" />
+    <ClCompile Include="Screen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="Screen.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.txt" />

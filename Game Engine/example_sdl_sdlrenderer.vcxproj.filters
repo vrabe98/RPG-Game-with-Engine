@@ -43,6 +43,9 @@
     <ClCompile Include="imgui.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Screen.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderable.h">
@@ -67,6 +70,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Screen.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

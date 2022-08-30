@@ -15,7 +15,7 @@ struct RenderContext
 	ImFont* font;
 	void Init(std::string);
 	void Destroy();
-	RenderContext() {}
+	RenderContext();
 	RenderContext(SDL_Window*, SDL_Renderer*, ImFont*);
 };
 
