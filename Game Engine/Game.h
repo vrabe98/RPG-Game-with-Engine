@@ -1,5 +1,10 @@
 #pragma once
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <vector>
 #include "Screen.h"
+
 class Loader;
 
 /*
@@ -11,7 +16,7 @@ class Game
 {
 protected:
 	Loader* loader;
-	std::list<Screen> screens;
+	std::vector<Screen*> screens;
 	RenderContext render_context;
 	std::string name;
 public:
@@ -19,6 +24,7 @@ public:
 		return &render_context;
 	}
 	void Init_SDL2_ImGUI();
+	void Load(std::string data_paths_json);
 	void Shutdown();
 	virtual void Play() = 0;
 	Game(std::string);

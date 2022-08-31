@@ -1,9 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <json.hpp>
 #include "CustomGame.h"
-
-using json = nlohmann::json;
 
 int main(int, char**)
 {
@@ -11,6 +6,7 @@ int main(int, char**)
 
     try {
         game.Init_SDL2_ImGUI();
+        game.Load("Data/folder_paths.json");
     }
     catch (std::runtime_error e) {
         printf(e.what());

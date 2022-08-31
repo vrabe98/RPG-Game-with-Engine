@@ -9,11 +9,13 @@
 class Screen
 {
 	std::string name;
-	std::list<Renderable*> renderables;
+	RenderContext* render_context;
+	std::list<Window*> windows;
 public:
-	void AddRenderable(Renderable*);
-	Screen(){}
-	Screen(std::list<Renderable*>);
+	void AddWindow(Window*);
+	bool Render();
+	Screen(RenderContext* context) { this->render_context = context; }
+	Screen(std::list<Window*>,RenderContext*);
 	~Screen();
 };
 
