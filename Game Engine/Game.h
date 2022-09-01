@@ -43,5 +43,5 @@ public:
 class Loader
 {
 public:
-	void LoadUI(std::string ui_folderpath, std::list<Screen>& screens);
+	void LoadUI(std::string, std::vector<Screen*>&,RenderContext*);
 };

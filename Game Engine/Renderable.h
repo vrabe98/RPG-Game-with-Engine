@@ -37,7 +37,6 @@ class Button:public Renderable {
 	float round_radius;
 public:
 	Button() {};
-	Button(const char* text, RenderContext* context, const ImVec2& dim, const ImVec2& pos, const ImVec4& color, float round_radius=0.0f);
 	Button(json,RenderContext*);
 	bool render();
 };

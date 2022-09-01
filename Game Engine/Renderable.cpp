@@ -1,19 +1,10 @@
 #include "Renderable.h"
 
-Button::Button(const char* text, RenderContext* context, const ImVec2& dim, const ImVec2& pos, const ImVec4& color, float round_radius) :Renderable(context) {
-	this->dim = dim;
-	this->pos = pos;
-	this->color = color;
-	this->round_radius = round_radius;
-	this->color_hover = ImVec4{ color.x + 0.25f,color.y + 0.25f,color.z + 0.25f,color.w };
-	this->color_active = ImVec4{ color.x + 0.2f,color.y + 0.2f,color.z + 0.2f,color.w };
-	this->text = std::string(text);
-}
-
 Button::Button(json data, RenderContext* context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->color = ImVec4(data["color"][0], data["color"][1], data["color"][2],data["color"][3]);
+	this->round_radius = data["round_radius"];
 	this->text = data["text"].get<std::string>();
 	this->color_hover = ImVec4{ color.x + 0.25f,color.y + 0.25f,color.z + 0.25f,color.w };
 	this->color_active = ImVec4{ color.x + 0.2f,color.y + 0.2f,color.z + 0.2f,color.w };
