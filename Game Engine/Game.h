@@ -20,9 +20,7 @@ protected:
 	RenderContext render_context;
 	std::string name;
 public:
-	RenderContext* getRenderContext() {
-		return &render_context;
-	}
+	RenderContext* getRenderContext();
 	void Init_SDL2_ImGUI();
 	void Load(std::string data_paths_json);
 	void Shutdown();

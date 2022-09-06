@@ -62,3 +62,11 @@ bool Window::render(){
 	ImGui::End();
 	return act;
 }
+
+Renderable::Renderable(){
+	render_context = nullptr;
+}
+
+Renderable::Renderable(RenderContext* context){
+	this->render_context = context;
+}

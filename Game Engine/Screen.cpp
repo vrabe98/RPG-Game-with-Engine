@@ -22,6 +22,10 @@ bool Screen::Render(){
 	return act;
 }
 
+Screen::Screen(RenderContext* context){
+	this->render_context = context;
+}
+
 Screen::Screen(std::list<Window*> wnds,RenderContext* context) {
 	this->windows = wnds;
 	this->render_context = context;

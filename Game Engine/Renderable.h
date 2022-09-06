@@ -19,10 +19,8 @@ public:
 	virtual bool render()=0;	//bool to return the state of widgets in case it is needed, otherwise required to return true
 	virtual ~Renderable() {}
 	std::string getAction() { return action; }	//PLACEHOLDER FOR QUICK TESTING
-	Renderable() { render_context = nullptr; }
-	Renderable(RenderContext* context) {
-		this->render_context = context;
-	}
+	Renderable();
+	Renderable(RenderContext*);
 };
 
 /*

@@ -14,7 +14,7 @@ class Screen
 public:
 	void AddWindow(Window*);
 	bool Render();
-	Screen(RenderContext* context) { this->render_context = context; }
+	Screen(RenderContext*);
 	Screen(std::list<Window*>,RenderContext*);
 	~Screen();
 };

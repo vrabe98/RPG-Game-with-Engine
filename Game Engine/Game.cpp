@@ -8,6 +8,10 @@ Game::Game(std::string name) {
     loader = new Loader;
 }
 
+RenderContext* Game::getRenderContext(){
+    return &render_context;
+}
+
 void Game::Init_SDL2_ImGUI() {
     render_context.Init(name);
 }
