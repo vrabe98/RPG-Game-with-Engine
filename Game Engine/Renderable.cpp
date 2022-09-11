@@ -32,6 +32,7 @@ bool Button::render() {
 
 Window::Window(json data,int ind,RenderContext* context){
 	this->dim = ImVec2(data[ind]["dim"][0], data[ind]["dim"][1]);
+	this->pos = ImVec2(data[ind]["pos"][0], data[ind]["pos"][1]);
 	this->name = data[ind]["name"].get<std::string>();
 	this->render_context = context;
 	for (int i = ind+1; i < size(data); i++) {
@@ -46,8 +47,8 @@ Window::Window(json data,int ind,RenderContext* context){
 bool Window::render(){
 	bool act=true;
 	ImGui::Begin(name.c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-	ImGui::SetWindowPos(ImVec2((WIN_W - 500) / 2, (WIN_H - 500) / 2));
-	ImGui::SetWindowSize(ImVec2(500, 500));
+	ImGui::SetWindowPos(pos);
+	ImGui::SetWindowSize(dim);
 	ImGui::PushFont(render_context->font);
 
 	for (Renderable* rnd : renderables) {

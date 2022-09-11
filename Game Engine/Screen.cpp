@@ -4,6 +4,10 @@ void Screen::AddWindow(Window* window){
 	windows.push_back(window);
 }
 
+void Screen::AddRenderable(Renderable* rnd){
+	renderables.push_back(rnd);
+}
+
 bool Screen::Render(){
 	bool act = true;
 	ImGui_ImplSDLRenderer_NewFrame();
@@ -14,6 +18,9 @@ bool Screen::Render(){
 		if(!wnd->render()) act=false;
 	}
 
+	for (Renderable* rnd : renderables) {
+		rnd->render();
+	}
 	ImGui::Render();
 	SDL_SetRenderDrawColor(render_context->renderer, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)1);
 	SDL_RenderClear(render_context->renderer);
