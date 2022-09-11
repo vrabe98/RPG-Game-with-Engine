@@ -49,6 +49,6 @@ class Window:public Renderable{
 	std::list<Renderable*> renderables;
 public:
 	Window() {};
-	Window(json,int,RenderContext*);
+	Window(json,RenderContext*);
 	bool render();
 };

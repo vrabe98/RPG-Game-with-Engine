@@ -30,17 +30,16 @@ bool Button::render() {
 	return res;
 }
 
-Window::Window(json data,int ind,RenderContext* context){
-	this->dim = ImVec2(data[ind]["dim"][0], data[ind]["dim"][1]);
-	this->pos = ImVec2(data[ind]["pos"][0], data[ind]["pos"][1]);
-	this->name = data[ind]["name"].get<std::string>();
+Window::Window(json data,RenderContext* context){
+	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
+	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
+	this->name = data["name"].get<std::string>();
 	this->render_context = context;
-	for (int i = ind+1; i < size(data); i++) {
-		if (data[i]["type"].get<std::string>() == "button") {
-			Button* btn = new Button(data[i], render_context);
+	for (json wdg:data["widgets"]) {
+		if (wdg["type"].get<std::string>() == "button") {
+			Button* btn = new Button(wdg, render_context);
 			renderables.push_back(btn);
 		}
-		else if (data[i]["type"].get<std::string>() == "window") break;
 	}
 }
 

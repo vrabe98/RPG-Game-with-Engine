@@ -39,12 +39,8 @@ void Loader::LoadUI(std::string ui_folderpath, std::vector<Screen*>& screens,Ren
         Screen* screen = new Screen(context);
         int ind = 0;
         for (auto& element : data) {
-            //a window element is followed by a list of renderables, there can be multiple windows in 1 file
-            if (element["type"].get<std::string>() == "window") {
-                Window* wnd = new Window(data, ind, context);
-                screen->AddWindow(wnd);
-            }
-            ind++;
+            Window* wnd = new Window(element, context);
+            screen->AddWindow(wnd);
         }
         screens.push_back(screen);
     }
