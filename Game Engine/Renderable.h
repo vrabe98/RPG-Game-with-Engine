@@ -48,7 +48,7 @@ public:
 class Window:public Renderable{
 	ImVec2 dim, pos;
 	std::string name;
-	std::list<Renderable*> renderables;
+	std::vector<std::shared_ptr<Renderable>> renderables;
 public:
 	Window() {};
 	Window(json, std::shared_ptr<RenderContext>);

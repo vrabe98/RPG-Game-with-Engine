@@ -25,7 +25,7 @@ void Game::Load(std::string data_paths_json)
 }
 
 void Game::Shutdown() {
-    for (std::shared_ptr<Screen> scr : screens) {
+    for (auto& scr : screens) {
         scr.reset();
     }
     render_context.reset();

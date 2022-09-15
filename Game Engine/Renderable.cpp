@@ -48,9 +48,9 @@ Window::Window(json data, std::shared_ptr<RenderContext> context):Renderable(con
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->name = data["name"].get<std::string>();
-	for (json wdg:data["widgets"]) {
+	for (auto& wdg:data["widgets"]) {
 		if (wdg["type"].get<std::string>() == "button") {
-			Button* btn = new Button(wdg, render_context);
+			std::shared_ptr<Button> btn = std::make_shared<Button>(wdg, render_context);
 			renderables.push_back(btn);
 		}
 	}
@@ -63,7 +63,7 @@ bool Window::render(){
 	ImGui::SetWindowSize(dim);
 	ImGui::PushFont(render_context->font);
 
-	for (Renderable* rnd : renderables) {
+	for (auto& rnd : renderables) {
 		if (rnd->render()) {
 			if (rnd->getAction() == "exit") {
 				act = false;

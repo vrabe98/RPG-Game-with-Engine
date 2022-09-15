@@ -14,11 +14,11 @@ bool Screen::Render(){
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	for (std::shared_ptr<Window> wnd : windows) {
+	for (auto& wnd : windows) {
 		if(!wnd->render()) act=false;
 	}
 
-	for (std::shared_ptr<Renderable> rnd : renderables) {
+	for (auto& rnd : renderables) {
 		rnd->render();
 	}
 
@@ -42,10 +42,10 @@ Screen::Screen(std::vector<std::shared_ptr<Window>> wnds, std::vector<std::share
 }
 
 Screen::~Screen() {
-	for (std::shared_ptr<Window> wnd : windows) {
+	for (auto& wnd : windows) {
 		wnd.reset();
 	}
-	for (std::shared_ptr<Renderable> rnd : renderables) {
+	for (auto& rnd : renderables) {
 		rnd.reset();
 	}
 }
