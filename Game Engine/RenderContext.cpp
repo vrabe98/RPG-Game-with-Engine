@@ -1,19 +1,6 @@
 #include "RenderContext.h"
 
-RenderContext::RenderContext() {
-    window = nullptr;
-    renderer = nullptr;
-}
-
-RenderContext::RenderContext(SDL_Window* window, SDL_Renderer* renderer, ImFont* font)
-{
-	this->window = window;
-	this->renderer = renderer;
-	this->font = font;
-}
-
-void RenderContext::Init(std::string name)
-{
+RenderContext::RenderContext(std::string name) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         throw std::runtime_error(SDL_GetError());
@@ -37,7 +24,7 @@ void RenderContext::Init(std::string name)
     ImGui_ImplSDLRenderer_Init(renderer);
 }
 
-void RenderContext::Destroy()
+RenderContext::~RenderContext()
 {
     ImGui_ImplSDLRenderer_Shutdown();
     ImGui_ImplSDL2_Shutdown();

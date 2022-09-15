@@ -1,6 +1,18 @@
 #include "Renderable.h"
 
-Button::Button(json data, RenderContext* context) {
+Renderable::Renderable() {
+	render_context = nullptr;
+}
+
+Renderable::Renderable(std::shared_ptr<RenderContext> context) {
+	this->render_context = context;
+}
+
+/*
+	Button class method definitions
+*/
+
+Button::Button(json data, std::shared_ptr<RenderContext> context):Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->color = ImVec4(data["color"][0], data["color"][1], data["color"][2],data["color"][3]);
@@ -10,8 +22,6 @@ Button::Button(json data, RenderContext* context) {
 	this->color_active = ImVec4{ color.x + 0.2f,color.y + 0.2f,color.z + 0.2f,color.w };
 
 	this->action = data["action"].get<std::string>();
-
-	this->render_context = context;
 }
 
 bool Button::render() {
@@ -30,11 +40,14 @@ bool Button::render() {
 	return res;
 }
 
-Window::Window(json data,RenderContext* context){
+/*
+	Window class method definitions
+*/
+
+Window::Window(json data, std::shared_ptr<RenderContext> context):Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->name = data["name"].get<std::string>();
-	this->render_context = context;
 	for (json wdg:data["widgets"]) {
 		if (wdg["type"].get<std::string>() == "button") {
 			Button* btn = new Button(wdg, render_context);
@@ -61,12 +74,4 @@ bool Window::render(){
 	ImGui::PopFont();
 	ImGui::End();
 	return act;
-}
-
-Renderable::Renderable(){
-	render_context = nullptr;
-}
-
-Renderable::Renderable(RenderContext* context){
-	this->render_context = context;
 }

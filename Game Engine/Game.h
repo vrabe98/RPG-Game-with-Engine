@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-#include <vector>
 #include "Screen.h"
 
 class Loader;
@@ -15,12 +14,12 @@ class Loader;
 class Game
 {
 protected:
-	Loader* loader;
-	std::vector<Screen*> screens;
-	RenderContext render_context;
+	std::unique_ptr<Loader> loader;							//can theoretically be destroyed after loading
+	std::vector<std::shared_ptr<Screen>> screens;
+	std::shared_ptr<RenderContext> render_context;
 	std::string name;
 public:
-	RenderContext* getRenderContext();
+	std::shared_ptr<RenderContext> getRenderContext();
 	void Init_SDL2_ImGUI();
 	void Load(std::string data_paths_json);
 	void Shutdown();
@@ -41,5 +40,5 @@ public:
 class Loader
 {
 public:
-	void LoadUI(std::string, std::vector<Screen*>&,RenderContext*);
+	void LoadUI(std::string, std::vector<std::shared_ptr<Screen>>&,std::shared_ptr<RenderContext>);
 };

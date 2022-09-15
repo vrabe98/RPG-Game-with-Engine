@@ -9,15 +9,15 @@
 class Screen
 {
 	std::string name;
-	RenderContext* render_context;
-	std::list<Window*> windows;				//dear ImGUI windows
-	std::list<Renderable*> renderables;		//misc graphics (background, the game map, etc.)
+	std::shared_ptr<RenderContext> render_context;
+	std::vector<std::shared_ptr<Window>> windows;				//dear ImGUI windows
+	std::vector<std::shared_ptr<Renderable>> renderables;		//misc graphics (background, the game map, etc.)
 public:
-	void AddWindow(Window*);
-	void AddRenderable(Renderable*);
+	void AddWindow(std::shared_ptr<Window>);
+	void AddRenderable(std::shared_ptr<Renderable>);
 	bool Render();
-	Screen(RenderContext*);
-	Screen(std::list<Window*>,RenderContext*);
+	Screen(std::shared_ptr<RenderContext>);
+	Screen(std::vector<std::shared_ptr<Window>>, std::vector<std::shared_ptr<Renderable>>, std::shared_ptr<RenderContext>);
 	~Screen();
 };
 

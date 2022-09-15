@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <vector>
+#include <memory>
 #include "json.hpp"
 #include "RenderContext.h"
 
@@ -13,14 +15,14 @@ using json = nlohmann::json;
 class Renderable
 {
 protected:
-	RenderContext* render_context;
-	std::string action;		//PLACEHOLDER FOR QUICK TESTING
+	std::shared_ptr<RenderContext> render_context;
+	std::string action;			//PLACEHOLDER FOR QUICK TESTING
 public:
 	virtual bool render()=0;	//bool to return the state of widgets in case it is needed, otherwise required to return true
 	virtual ~Renderable() {}
 	std::string getAction() { return action; }	//PLACEHOLDER FOR QUICK TESTING
 	Renderable();
-	Renderable(RenderContext*);
+	Renderable(std::shared_ptr<RenderContext>);
 };
 
 /*
@@ -35,7 +37,7 @@ class Button:public Renderable {
 	float round_radius;
 public:
 	Button() {};
-	Button(json,RenderContext*);
+	Button(json,std::shared_ptr<RenderContext>);
 	bool render();
 };
 
@@ -49,6 +51,6 @@ class Window:public Renderable{
 	std::list<Renderable*> renderables;
 public:
 	Window() {};
-	Window(json,RenderContext*);
+	Window(json, std::shared_ptr<RenderContext>);
 	bool render();
 };
