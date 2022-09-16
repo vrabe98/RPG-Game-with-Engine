@@ -12,3 +12,5 @@ public:
 	void Play() override;
 };
 
+extern CustomGame game;
+extern std::shared_ptr<Database> db;

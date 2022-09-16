@@ -24,15 +24,24 @@
     <ClCompile Include="CustomGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Actions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\folder_paths.json">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Data\UI data\0.json">
+      <Filter>Resource Files\UI Data</Filter>
     </None>
     <None Include="Data\UI data\1.json">
       <Filter>Resource Files\UI Data</Filter>

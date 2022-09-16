@@ -1,20 +1,19 @@
-#include "CustomGame.h"
+#include "Actions.h"
 
 int main(int, char**)
 {
-    CustomGame game("Joc");
-
     try {
         game.Init_SDL2_ImGUI();
+        game.setActions(actions);
+        game.setDB(db);
         game.Load("Data/folder_paths.json");
+        game.Play();
     }
-    catch (std::runtime_error e) {
+    catch (std::exception e) {
         printf(e.what());
         game.Shutdown();
         return -1;
     }
-
-    game.Play();
 
     game.Shutdown();
 

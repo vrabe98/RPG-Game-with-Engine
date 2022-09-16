@@ -7,6 +7,7 @@
 #include "RenderContext.h"
 
 using json = nlohmann::json;
+using actions_map = std::map<std::string, std::function<int()>>;
 
 /*
 	Base class for renderable components
@@ -16,11 +17,11 @@ class Renderable
 {
 protected:
 	std::shared_ptr<RenderContext> render_context;
-	std::string action;			//PLACEHOLDER FOR QUICK TESTING
+	std::function<int()> action;	//will not be used if the object is not a widget
 public:
-	virtual bool render()=0;	//bool to return the state of widgets in case it is needed, otherwise required to return true
-	virtual ~Renderable() {}
-	std::string getAction() { return action; }	//PLACEHOLDER FOR QUICK TESTING
+	virtual bool render()=0;	//bool to return the state of widgets in case it is needed, otherwise required to return false
+	virtual ~Renderable() {};
+	int act();
 	Renderable();
 	Renderable(std::shared_ptr<RenderContext>);
 };
@@ -37,7 +38,7 @@ class Button:public Renderable {
 	float round_radius;
 public:
 	Button() {};
-	Button(json,std::shared_ptr<RenderContext>);
+	Button(json,std::shared_ptr<RenderContext>,std::shared_ptr<actions_map>);
 	bool render();
 };
 
@@ -51,6 +52,6 @@ class Window:public Renderable{
 	std::vector<std::shared_ptr<Renderable>> renderables;
 public:
 	Window() {};
-	Window(json, std::shared_ptr<RenderContext>);
+	Window(json, std::shared_ptr<RenderContext>, std::shared_ptr<actions_map>);
 	bool render();
 };

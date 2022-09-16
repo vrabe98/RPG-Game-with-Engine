@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actions.cpp" />
     <ClCompile Include="CustomGame.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -142,10 +143,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actions.h" />
     <ClInclude Include="CustomGame.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\folder_paths.json" />
+    <None Include="Data\UI data\0.json" />
     <None Include="Data\UI data\1.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

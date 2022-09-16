@@ -6,6 +6,7 @@
 
 Game::Game(std::string name) {
     this->name = name;
+    game_state = 0;
     loader = std::make_unique<Loader>();
 }
 
@@ -17,15 +18,32 @@ void Game::Init_SDL2_ImGUI() {
     render_context = std::make_shared<RenderContext>(name);
 }
 
+void Game::setActions(std::shared_ptr<actions_map> actions) {
+    loader->setActions(actions);
+}
+
+void Game::setDB(std::shared_ptr<Database> db){
+    this->db = db;
+    loader->setDB(db);
+}
+
+void Game::setState(int state) {
+    this->game_state = state;
+}
+
+std::shared_ptr<Database> Game::getDB(){
+    return db;
+}
+
 void Game::Load(std::string data_paths_json)
 {
     json paths = json::parse(std::ifstream(data_paths_json));
-    loader->LoadUI(paths["UI"].get<std::string>(),screens,render_context);
+    loader->LoadUI(paths["UI"].get<std::string>(),render_context);
     loader.reset();     //delete loader after the loading process is done
 }
 
 void Game::Shutdown() {
-    for (auto& scr : screens) {
+    for (auto& scr : db->screens) {
         scr.reset();
     }
     render_context.reset();
@@ -35,16 +53,32 @@ void Game::Shutdown() {
     Loader class method definitions
 */
 
-void Loader::LoadUI(std::string ui_folderpath, std::vector<std::shared_ptr<Screen>>& screens,std::shared_ptr<RenderContext> context){
+void Loader::setActions(std::shared_ptr<actions_map> actions) {
+    this->actions = actions;
+}
+
+void Loader::setDB(std::shared_ptr<Database> db){
+    this->db = db;
+}
+
+void Loader::LoadUI(std::string ui_folderpath,std::shared_ptr<RenderContext> context){
     for (auto& entry : std::filesystem::directory_iterator(ui_folderpath)) {
         json data = json::parse(std::ifstream(entry.path()));
         std::shared_ptr<Screen> screen = std::make_shared<Screen>(context);
         for (auto& element : data) {    //supports dear imGUI windows with widgets or other renderables
             if (element["type"].get<std::string>() == "window") {
-                std::shared_ptr<Window> wnd = std::make_shared<Window>(element, context);
+                std::shared_ptr<Window> wnd = std::make_shared<Window>(element, context,actions);
                 screen->AddWindow(wnd);
             }
         }
-        screens.push_back(screen);
+        db->screens.push_back(screen);
     }
+}
+
+/*
+    Database class method definitions
+*/
+
+std::shared_ptr<Screen> Database::getScreen(int scr){
+    return screens[scr];
 }

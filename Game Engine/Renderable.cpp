@@ -8,11 +8,17 @@ Renderable::Renderable(std::shared_ptr<RenderContext> context) {
 	this->render_context = context;
 }
 
+int Renderable::act() {
+	if(action) return action();
+	return 1;
+}
+
 /*
 	Button class method definitions
 */
 
-Button::Button(json data, std::shared_ptr<RenderContext> context):Renderable(context) {
+Button::Button(json data, std::shared_ptr<RenderContext> context, std::shared_ptr<actions_map> actions):
+		Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->color = ImVec4(data["color"][0], data["color"][1], data["color"][2],data["color"][3]);
@@ -21,7 +27,7 @@ Button::Button(json data, std::shared_ptr<RenderContext> context):Renderable(con
 	this->color_hover = ImVec4{ color.x + 0.25f,color.y + 0.25f,color.z + 0.25f,color.w };
 	this->color_active = ImVec4{ color.x + 0.2f,color.y + 0.2f,color.z + 0.2f,color.w };
 
-	this->action = data["action"].get<std::string>();
+	this->action = (*actions)[data["action"].get<std::string>()];
 }
 
 bool Button::render() {
@@ -44,13 +50,14 @@ bool Button::render() {
 	Window class method definitions
 */
 
-Window::Window(json data, std::shared_ptr<RenderContext> context):Renderable(context) {
+Window::Window(json data, std::shared_ptr<RenderContext> context, std::shared_ptr<actions_map> actions):
+		Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
 	this->name = data["name"].get<std::string>();
 	for (auto& wdg:data["widgets"]) {
 		if (wdg["type"].get<std::string>() == "button") {
-			std::shared_ptr<Button> btn = std::make_shared<Button>(wdg, render_context);
+			std::shared_ptr<Button> btn = std::make_shared<Button>(wdg, render_context,actions);
 			renderables.push_back(btn);
 		}
 	}
@@ -65,9 +72,7 @@ bool Window::render(){
 
 	for (auto& rnd : renderables) {
 		if (rnd->render()) {
-			if (rnd->getAction() == "exit") {
-				act = false;
-			}
+			act=rnd->act();
 		}
 	}
 

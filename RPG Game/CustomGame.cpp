@@ -1,5 +1,8 @@
 #include "CustomGame.h"
 
+CustomGame game("Joc");
+std::shared_ptr<Database> db = std::make_shared<Database>();
+
 void CustomGame::Play(){
     ImVec4 bkg_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
     bool done = false;
@@ -15,6 +18,6 @@ void CustomGame::Play(){
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(render_context->window))
                 done = true;
         }
-        done=!screens[0]->Render();
+        done=!db->getScreen(game_state)->Render();
     }
 }
