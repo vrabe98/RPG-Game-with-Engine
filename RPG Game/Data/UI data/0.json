@@ -24,5 +24,11 @@
         "action": "exit"
       }
     ]
+  },
+  {
+    "type": "background",
+    "pos": [ 0, 0 ],
+    "dim": [ 1280, 720 ],
+    "path": "Data\\Images\\Backgrounds\\0.jpg"
   }
 ]

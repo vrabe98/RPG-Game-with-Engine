@@ -27,6 +27,20 @@ public:
 };
 
 /*
+	Wrapper for hardware-accelerated SDL2 textures
+*/
+
+class Texture :public Renderable {
+	SDL_Rect rnd_rect;
+	SDL_Texture* texture;
+public:
+	bool render();
+	Texture() {}
+	Texture(json, std::shared_ptr<RenderContext>);
+	~Texture();
+};
+
+/*
 	Wrapper classes for Dear ImGUI widgets, derived from Renderable
 */
 

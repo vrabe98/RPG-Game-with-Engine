@@ -1,4 +1,7 @@
+#include <set>
 #include "Game.h"
+
+std::set<std::string> misc_rnd={"background","texture"};
 
 /*
     Game class method definitions
@@ -69,6 +72,10 @@ void Loader::LoadUI(std::string ui_folderpath,std::shared_ptr<RenderContext> con
             if (element["type"].get<std::string>() == "window") {
                 std::shared_ptr<Window> wnd = std::make_shared<Window>(element, context,actions);
                 screen->AddWindow(wnd);
+            }
+            else if(misc_rnd.contains(element["type"].get<std::string>())){
+                std::shared_ptr<Texture> tex = std::make_shared<Texture>(element, context);
+                screen->AddRenderable(tex);
             }
         }
         db->screens.push_back(screen);

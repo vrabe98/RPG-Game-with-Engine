@@ -80,3 +80,31 @@ bool Window::render(){
 	ImGui::End();
 	return act;
 }
+
+/*
+	Texture class method definitions
+*/
+
+bool Texture::render(){
+	SDL_RenderCopy(render_context->renderer, texture, NULL, &rnd_rect);
+	return false;
+}
+
+Texture::Texture(json data, std::shared_ptr<RenderContext> context){
+	this->render_context = context;
+	this->rnd_rect = SDL_Rect{ data["pos"][0], data["pos"][1],data["dim"][0], data["dim"][1] };
+	texture = nullptr;
+	SDL_Surface* surf = IMG_Load(data["path"].get<std::string>().c_str());
+	if (surf == nullptr) {
+		throw std::runtime_error("Texture " + data["path"].get<std::string>() + " could not be loaded!");
+	}
+	texture = SDL_CreateTextureFromSurface(render_context->renderer, surf);
+	if (texture == nullptr) {
+		throw std::runtime_error("Texture " + data["path"].get<std::string>() + " could not be created!");
+	}
+	SDL_FreeSurface(surf);
+}
+
+Texture::~Texture(){
+	SDL_DestroyTexture(texture);
+}

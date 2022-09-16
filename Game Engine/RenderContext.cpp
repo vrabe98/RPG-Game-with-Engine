@@ -15,6 +15,11 @@ RenderContext::RenderContext(std::string name) {
         throw std::runtime_error("Error creating SDL_Renderer!");
     }
 
+    int imgFlags = IMG_INIT_PNG|IMG_INIT_JPG;
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        throw std::runtime_error("Error initializing SDL Image!");
+    }
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();

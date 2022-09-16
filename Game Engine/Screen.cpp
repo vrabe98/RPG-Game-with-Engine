@@ -15,16 +15,17 @@ bool Screen::Render(){
 	ImGui::NewFrame();
 
 	for (auto& wnd : windows) {
-		if(!wnd->render()) act=false;
+		if (!wnd->render()) act = false;
 	}
+
+	ImGui::Render();
+	SDL_SetRenderDrawColor(render_context->renderer, 0x00,0x00,0x00,0x00);
+	SDL_RenderClear(render_context->renderer);
 
 	for (auto& rnd : renderables) {
 		rnd->render();
 	}
 
-	ImGui::Render();
-	SDL_SetRenderDrawColor(render_context->renderer, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)1);
-	SDL_RenderClear(render_context->renderer);
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 	SDL_RenderPresent(render_context->renderer);
 	return act;
