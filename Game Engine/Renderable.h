@@ -16,14 +16,13 @@ using actions_map = std::map<std::string, std::function<int()>>;
 class Renderable
 {
 protected:
-	std::shared_ptr<RenderContext> render_context;
+	std::unique_ptr<RenderContext>& render_context;
 	std::function<int()> action;	//will not be used if the object is not a widget
 public:
 	virtual bool render()=0;	//bool to return the state of widgets in case it is needed, otherwise required to return false
 	virtual ~Renderable() {};
 	int act();
-	Renderable();
-	Renderable(std::shared_ptr<RenderContext>);
+	Renderable(std::unique_ptr<RenderContext>&);
 };
 
 /*
@@ -35,8 +34,7 @@ class Texture :public Renderable {
 	SDL_Texture* texture;
 public:
 	bool render();
-	Texture() {}
-	Texture(json, std::shared_ptr<RenderContext>);
+	Texture(json, std::unique_ptr<RenderContext>&);
 	~Texture();
 };
 
@@ -51,8 +49,7 @@ class Button:public Renderable {
 	std::string text;
 	float round_radius;
 public:
-	Button() {};
-	Button(json,std::shared_ptr<RenderContext>,std::shared_ptr<actions_map>);
+	Button(json,std::unique_ptr<RenderContext>&,std::shared_ptr<actions_map>&);
 	bool render();
 };
 
@@ -65,7 +62,6 @@ class Window:public Renderable{
 	std::string name;
 	std::vector<std::shared_ptr<Renderable>> renderables;
 public:
-	Window() {};
-	Window(json, std::shared_ptr<RenderContext>, std::shared_ptr<actions_map>);
+	Window(json, std::unique_ptr<RenderContext>&, std::shared_ptr<actions_map>&);
 	bool render();
 };

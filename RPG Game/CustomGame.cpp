@@ -9,7 +9,6 @@ void CustomGame::Play(){
     while (!done)
     {
         SDL_Event event;
-        Button button_play, button_exit;
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);

@@ -13,19 +13,19 @@ Game::Game(std::string name) {
     loader = std::make_unique<Loader>();
 }
 
-std::shared_ptr<RenderContext> Game::getRenderContext(){
+std::unique_ptr<RenderContext>& Game::getRenderContext(){
     return render_context;
 }
 
 void Game::Init_SDL2_ImGUI() {
-    render_context = std::make_shared<RenderContext>(name);
+    render_context = std::make_unique<RenderContext>(name);
 }
 
-void Game::setActions(std::shared_ptr<actions_map> actions) {
+void Game::setActions(std::shared_ptr<actions_map>& actions) {
     loader->setActions(actions);
 }
 
-void Game::setDB(std::shared_ptr<Database> db){
+void Game::setDB(std::shared_ptr<Database>& db){
     this->db = db;
     loader->setDB(db);
 }
@@ -56,15 +56,15 @@ void Game::Shutdown() {
     Loader class method definitions
 */
 
-void Loader::setActions(std::shared_ptr<actions_map> actions) {
+void Loader::setActions(std::shared_ptr<actions_map>& actions) {
     this->actions = actions;
 }
 
-void Loader::setDB(std::shared_ptr<Database> db){
+void Loader::setDB(std::shared_ptr<Database>& db){
     this->db = db;
 }
 
-void Loader::LoadUI(std::string ui_folderpath,std::shared_ptr<RenderContext> context){
+void Loader::LoadUI(std::string ui_folderpath,std::unique_ptr<RenderContext>& context){
     for (auto& entry : std::filesystem::directory_iterator(ui_folderpath)) {
         json data = json::parse(std::ifstream(entry.path()));
         std::shared_ptr<Screen> screen = std::make_shared<Screen>(context);

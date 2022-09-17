@@ -31,15 +31,12 @@ bool Screen::Render(){
 	return act;
 }
 
-Screen::Screen(std::shared_ptr<RenderContext> context){
-	this->render_context = context;
-}
+Screen::Screen(std::unique_ptr<RenderContext>& context):render_context(context) {}
 
 Screen::Screen(std::vector<std::shared_ptr<Window>> wnds, std::vector<std::shared_ptr<Renderable>> renderables,
-		std::shared_ptr<RenderContext> context) {
+		std::unique_ptr<RenderContext>& context):render_context(context) {
 	this->windows = wnds;
 	this->renderables = renderables;
-	this->render_context = context;
 }
 
 Screen::~Screen() {

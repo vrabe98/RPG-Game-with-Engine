@@ -1,12 +1,6 @@
 #include "Renderable.h"
 
-Renderable::Renderable() {
-	render_context = nullptr;
-}
-
-Renderable::Renderable(std::shared_ptr<RenderContext> context) {
-	this->render_context = context;
-}
+Renderable::Renderable(std::unique_ptr<RenderContext>& context):render_context(context) {}
 
 int Renderable::act() {
 	if(action) return action();
@@ -17,7 +11,7 @@ int Renderable::act() {
 	Button class method definitions
 */
 
-Button::Button(json data, std::shared_ptr<RenderContext> context, std::shared_ptr<actions_map> actions):
+Button::Button(json data, std::unique_ptr<RenderContext>& context, std::shared_ptr<actions_map>& actions):
 		Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
@@ -50,7 +44,7 @@ bool Button::render() {
 	Window class method definitions
 */
 
-Window::Window(json data, std::shared_ptr<RenderContext> context, std::shared_ptr<actions_map> actions):
+Window::Window(json data, std::unique_ptr<RenderContext>& context, std::shared_ptr<actions_map>& actions):
 		Renderable(context) {
 	this->dim = ImVec2(data["dim"][0], data["dim"][1]);
 	this->pos = ImVec2(data["pos"][0], data["pos"][1]);
@@ -90,8 +84,7 @@ bool Texture::render(){
 	return false;
 }
 
-Texture::Texture(json data, std::shared_ptr<RenderContext> context){
-	this->render_context = context;
+Texture::Texture(json data, std::unique_ptr<RenderContext>& context):Renderable(context) {
 	this->rnd_rect = SDL_Rect{ data["pos"][0], data["pos"][1],data["dim"][0], data["dim"][1] };
 	texture = nullptr;
 	SDL_Surface* surf = IMG_Load(data["path"].get<std::string>().c_str());

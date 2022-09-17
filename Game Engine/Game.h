@@ -18,15 +18,15 @@ protected:
 	int game_state;					//defines the game screen that is shown, corresponds to the json screen file number
 	std::unique_ptr<Loader> loader;							//can theoretically be destroyed after loading
 	std::shared_ptr<Database> db;
-	std::shared_ptr<RenderContext> render_context;
+	std::unique_ptr<RenderContext> render_context;
 	std::string name;
 public:
-	std::shared_ptr<RenderContext> getRenderContext();
+	std::unique_ptr<RenderContext>& getRenderContext();
 	void Init_SDL2_ImGUI();
 	void Load(std::string data_paths_json);
 	void Shutdown();
-	void setActions(std::shared_ptr<actions_map>);
-	void setDB(std::shared_ptr<Database>);
+	void setActions(std::shared_ptr<actions_map>&);
+	void setDB(std::shared_ptr<Database>&);
 	void setState(int);
 	std::shared_ptr<Database> getDB();
 	virtual void Play() = 0;
@@ -62,7 +62,7 @@ class Loader
 	std::shared_ptr<actions_map> actions;
 	std::shared_ptr<Database> db;
 public:
-	void setActions(std::shared_ptr<actions_map>);
-	void setDB(std::shared_ptr<Database>);
-	void LoadUI(std::string,std::shared_ptr<RenderContext>);
+	void setActions(std::shared_ptr<actions_map>&);
+	void setDB(std::shared_ptr<Database>&);
+	void LoadUI(std::string,std::unique_ptr<RenderContext>&);
 };
