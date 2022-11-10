@@ -89,10 +89,6 @@ void Loader::LoadUI(std::string ui_folderpath,std::unique_ptr<RenderContext>& co
 }
 
 void Loader::LoadMaps(json map_paths, int start_map, std::unique_ptr<RenderContext>& context){
-    std::string metadata_paths = map_paths["Metadata"].get<std::string>();
-    std::string tilemap_paths = map_paths["Tilemaps"].get<std::string>();
-    std::string tileset_paths = map_paths["Tilesets"].get<std::string>();
-
     db->current_map = start_map;
 
     for (auto& entry : std::filesystem::directory_iterator(map_paths["Metadata"].get<std::string>())) {
