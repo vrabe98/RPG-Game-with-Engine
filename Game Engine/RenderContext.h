@@ -18,3 +18,7 @@ struct RenderContext
 	~RenderContext();
 };
 
+//use this instead of ImVec2 whenever int coordinates are needed
+struct Coordinate {
+	int x, y;
+};

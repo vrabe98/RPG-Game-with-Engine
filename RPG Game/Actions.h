@@ -12,3 +12,6 @@ extern std::shared_ptr<actions_map> actions;
 
 int Exit();
 int Play();
+int Back_to_start();
+int Inc_map();
+int Dec_map();

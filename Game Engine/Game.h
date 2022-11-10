@@ -4,6 +4,8 @@
 #include <filesystem>
 #include "Screen.h"
 
+#define MAP_NONE -1
+
 class Loader;
 class Database;
 
@@ -23,7 +25,7 @@ protected:
 public:
 	std::unique_ptr<RenderContext>& getRenderContext();
 	void Init_SDL2_ImGUI();
-	void Load(std::string data_paths_json);
+	void Load(std::string);
 	void Shutdown();
 	void setActions(std::shared_ptr<actions_map>&);
 	void setDB(std::shared_ptr<Database>&);
@@ -39,10 +41,21 @@ public:
 */
 
 class Database {
+	int current_map;
+	std::shared_ptr<Coordinate> mainchar_pos;
+	std::unique_ptr<std::vector<std::shared_ptr<Map>>> maps;
+	std::shared_ptr<Map> current_map_ptr;
 	std::vector<std::shared_ptr<Screen>> screens;
 public:
-	Database(){}
 	std::shared_ptr<Screen> getScreen(int);
+	std::shared_ptr<Map>& get_current_map_ptr();
+	int get_current_map_nr();
+	void update_current_map();
+	void update_current_map(int);
+	std::shared_ptr<Coordinate>& get_mainchar_pos();	//PLACEHOLDER
+	std::unique_ptr<std::vector<std::shared_ptr<Map>>>& get_maps_ptr();
+	void add_map(std::shared_ptr<Map>);
+	Database();
 	friend class Loader;	//the Loader can access the private members
 	friend class Game;		//the custom game class won't inherit this
 };
@@ -65,4 +78,5 @@ public:
 	void setActions(std::shared_ptr<actions_map>&);
 	void setDB(std::shared_ptr<Database>&);
 	void LoadUI(std::string,std::unique_ptr<RenderContext>&);
+	void LoadMaps(json, int, std::unique_ptr<RenderContext>&);
 };

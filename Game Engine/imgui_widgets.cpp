@@ -1408,7 +1408,10 @@ void ImGui::SeparatorEx(ImGuiSeparatorFlags flags)
         if (g.GroupStack.Size > 0 && g.GroupStack.back().WindowID == window->ID)
             x1 += window->DC.Indent.x;
 
-        // FIXME-WORKRECT: In theory we should simply be using WorkRect.Min.x/Max.x everywhere but it isn't aesthetically what we want,
+        // FIXME-WORKRECT: In theory we should simply be using WorkRect.Min.x/Max.x everywhere but it isn't aesthetically 
+        // 
+        // 
+        //  we want,
         // need to introduce a variant of WorkRect for that purpose. (#4787)
         if (ImGuiTable* table = g.CurrentTable)
         {

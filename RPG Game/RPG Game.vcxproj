@@ -107,6 +107,7 @@
       <AdditionalIncludeDirectories>..\SDL\include;..\Game Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AssemblerOutput>NoListing</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,9 +152,15 @@
     <ClInclude Include="CustomGame.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\folder_paths.json" />
+    <None Include="Data\Maps\Metadata\map_1_metadata.json" />
+    <None Include="Data\Maps\Metadata\map_2_metadata .json" />
+    <None Include="Data\metadata.json" />
     <None Include="Data\UI data\0.json" />
     <None Include="Data\UI data\1.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Maps\Tilemaps\map_1.txt" />
+    <Text Include="Data\Maps\Tilemaps\map_2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

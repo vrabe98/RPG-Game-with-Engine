@@ -16,6 +16,15 @@
     <Filter Include="Resource Files\UI Data">
       <UniqueIdentifier>{f045e756-4eed-4267-a44b-40961dfbfaaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Maps">
+      <UniqueIdentifier>{fe416540-0d38-44c9-93fe-71f9f343c6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Maps\Metadata">
+      <UniqueIdentifier>{349134a8-b3ed-439f-9820-9194ddfd8333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Maps\Tilemaps">
+      <UniqueIdentifier>{80ff8909-4f07-49dc-bf74-27339c55ce73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -37,14 +46,28 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\folder_paths.json">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Data\UI data\0.json">
       <Filter>Resource Files\UI Data</Filter>
     </None>
     <None Include="Data\UI data\1.json">
       <Filter>Resource Files\UI Data</Filter>
     </None>
+    <None Include="Data\metadata.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Data\Maps\Metadata\map_1_metadata.json">
+      <Filter>Resource Files\Maps\Metadata</Filter>
+    </None>
+    <None Include="Data\Maps\Metadata\map_2_metadata .json">
+      <Filter>Resource Files\Maps\Metadata</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Maps\Tilemaps\map_1.txt">
+      <Filter>Resource Files\Maps\Tilemaps</Filter>
+    </Text>
+    <Text Include="Data\Maps\Tilemaps\map_2.txt">
+      <Filter>Resource Files\Maps\Tilemaps</Filter>
+    </Text>
   </ItemGroup>
 </Project>

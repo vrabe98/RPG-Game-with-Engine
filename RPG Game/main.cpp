@@ -6,7 +6,7 @@ int main(int, char**)
         game.Init_SDL2_ImGUI();
         game.setActions(actions);
         game.setDB(db);
-        game.Load("Data/folder_paths.json");
+        game.Load("Data/metadata.json");
         game.Play();
     }
     catch (std::exception e) {

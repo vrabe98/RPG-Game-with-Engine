@@ -1,0 +1,14 @@
+{
+  "Start map ID": 0,
+  "Data file paths": {
+    "UI": "Data\\UI data",
+    "Maps": {
+      "Metadata": "Data\\Maps\\Metadata",
+      "Tilemaps": "Data\\Maps\\Tilemaps",
+      "Tilesets": "Data\\Maps\\Tilesets"
+    },
+    "NPCs": "Data\\NPCs",
+    "Items": "Data\\Items",
+    "Quests": "Data\\Quests"
+  }
+ }

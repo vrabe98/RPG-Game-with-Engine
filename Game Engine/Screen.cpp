@@ -19,7 +19,7 @@ bool Screen::Render(){
 	}
 
 	ImGui::Render();
-	SDL_SetRenderDrawColor(render_context->renderer, 0x00,0x00,0x00,0x00);
+	SDL_SetRenderDrawColor(render_context->renderer, 0x00,0x00,0x00,0xff);
 	SDL_RenderClear(render_context->renderer);
 
 	for (auto& rnd : renderables) {

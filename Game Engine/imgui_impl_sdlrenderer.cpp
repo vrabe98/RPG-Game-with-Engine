@@ -107,7 +107,10 @@ void ImGui_ImplSDLRenderer_RenderDrawData(ImDrawData* draw_data)
 	ImGui_ImplSDLRenderer_Data* bd = ImGui_ImplSDLRenderer_GetBackendData();
 
 	// If there's a scale factor set by the user, use that instead
-    // If the user has specified a scale factor to SDL_Renderer already via SDL_RenderSetScale(), SDL will scale whatever we pass
+    // If the user has specified a scale factor to SDL_Renderer already via SDL_RenderSetScale(), SDL will scale 
+    // 
+    // 
+    // ever we pass
     // to SDL_RenderGeometryRaw() by that scale factor. In that case we don't want to be also scaling it ourselves here.
     float rsx = 1.0f;
 	float rsy = 1.0f;
