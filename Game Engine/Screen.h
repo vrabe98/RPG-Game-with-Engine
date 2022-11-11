@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include "Renderable.h"
+#include "Character.h"	//includes Renderable.h
 
 /*
 	The Screen class is basically a container for various renderable objects.

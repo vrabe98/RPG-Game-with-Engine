@@ -181,10 +181,15 @@ bool Map::render() {
 	return false;
 }
 
+uint16_t Map::get_id() {
+	return id;
+}
+
 Map::Map(json metadata, std::unique_ptr<RenderContext>& context) :Renderable(context),texture(context) {
 	SDL_Rect map_dim_pixels;
 	SDL_Texture* tex;
 	std::ifstream tilemap_file(metadata["tilemap_path"].get<std::string>());
+	id = metadata["ID"];
 	name = metadata["name"].get<std::string>();
 	description = metadata["description"].get<std::string>();
 

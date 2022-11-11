@@ -108,6 +108,7 @@ public:
 */
 
 class Map :public Renderable {
+	uint16_t id;								//allows more than 256 maps, used in ordering the maps
 	std::valarray<uint8_t> tilemap;
 	SDL_Rect viewport;
 	SDL_Rect num_tiles, dim_tile, dim_source_tile;
@@ -118,6 +119,7 @@ class Map :public Renderable {
 public:
 	void set_pos_ptr(std::shared_ptr<Coordinate>&);
 	void set_viewport(SDL_Rect);	//set the viewport from the map view before every render
+	uint16_t get_id();
 	bool render() override;
 	Map(json, std::unique_ptr<RenderContext>&);
 	~Map();

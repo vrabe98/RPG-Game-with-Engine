@@ -54,7 +54,7 @@ public:
 	void update_current_map(int);
 	std::shared_ptr<Coordinate>& get_mainchar_pos();	//PLACEHOLDER
 	std::unique_ptr<std::vector<std::shared_ptr<Map>>>& get_maps_ptr();
-	void add_map(std::shared_ptr<Map>);
+	void add_map(std::shared_ptr<Map>,uint16_t);
 	Database();
 	friend class Loader;	//the Loader can access the private members
 	friend class Game;		//the custom game class won't inherit this

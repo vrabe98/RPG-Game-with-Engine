@@ -95,7 +95,7 @@ void Loader::LoadMaps(json map_paths, int start_map, std::unique_ptr<RenderConte
         json data = json::parse(std::ifstream(entry.path()));
         std::shared_ptr<Map> map = std::make_shared<Map>(data, context);
         map->set_pos_ptr(db->get_mainchar_pos());
-        db->add_map(map);
+        db->add_map(map,map->get_id());
     }
 }
 
@@ -132,8 +132,11 @@ std::shared_ptr<Coordinate>& Database::get_mainchar_pos() {
     return mainchar_pos;
 }
 
-void Database::add_map(std::shared_ptr<Map> map) {
-    maps->push_back(map);
+void Database::add_map(std::shared_ptr<Map> map,uint16_t pos) {
+    if (maps->size() < pos+1) {
+        maps->resize(pos+1);
+        (*maps)[pos] = map;
+    }
 }
 
 std::unique_ptr<std::vector<std::shared_ptr<Map>>>& Database::get_maps_ptr() {
