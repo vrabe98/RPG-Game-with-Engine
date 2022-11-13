@@ -94,7 +94,6 @@ void Loader::LoadMaps(json map_paths,std::unique_ptr<RenderContext>& context){
     for (auto& entry : std::filesystem::directory_iterator(map_paths["Metadata"].get<std::string>())) {
         json data = json::parse(std::ifstream(entry.path()));
         std::shared_ptr<Map> map = std::make_shared<Map>(data, context);
-        map->set_pos_ptr(db->get_mainchar_pos());
         db->add_map(map,map->get_id());
     }
 }
@@ -173,6 +172,10 @@ void Database::add_npc(std::shared_ptr<Character> npc) {        //NEED TO CHANGE
 
 void Database::set_main_char(std::shared_ptr<Main_character> main_char) {
     this->main_char = main_char;
+    this->mainchar_pos = main_char->get_pos();
+    for (auto& map : *maps) {
+        map->set_pos_ptr(mainchar_pos);
+    }
 }
 
 std::unique_ptr<std::vector<std::shared_ptr<Map>>>& Database::get_maps_ptr() {

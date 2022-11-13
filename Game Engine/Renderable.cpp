@@ -192,6 +192,13 @@ void Map::set_viewport(SDL_Rect viewport) {
 	this->viewport = viewport;
 }
 
+bool Map::can_access() {
+	Coordinate pos = *mainchar_pos;
+	pos.x = pos.x / dim_tile.w;
+	pos.y = pos.y / dim_tile.h;
+	return tile_accessib[(*tilemap)[pos.y * num_tiles.w + pos.x]];
+}
+
 SDL_Rect Map::get_tile_dim() {
 	return dim_tile;
 }
@@ -205,7 +212,7 @@ or the whole map along the dimensions smaller than the viewport size
 I HAVE TO MODIFY THE DEPENDENCE ON THE CHARACTER'S POSITION!
 */
 bool Map::render() {
-	SDL_Rect src = {mainchar_pos->x,mainchar_pos->y,0,0};
+	SDL_Rect src = {0,0,0,0};
 	SDL_Rect dest = { 0,0,0,0 };
 
 	src.w = std::min(num_tiles.w * dim_tile.w, viewport.w);
@@ -263,6 +270,9 @@ Map::Map(json metadata, std::unique_ptr<RenderContext>& context) :Renderable(con
 		}
 	}
 
+	//read tile accessibility data
+	for (auto& tile_acc : metadata["tile_accessibility"]) tile_accessib.push_back(tile_acc);
+
 	SDL_SetRenderTarget(context->renderer, NULL);
 }
 
@@ -298,13 +308,8 @@ void Character::set_current_map_id(int map_id) {
 	this->map_id = map_id;
 }
 
-std::shared_ptr<Coordinate> Character::get_tile() {
-	return pos_tiles;
-}
-
 void Character::change_map(int map_id, SDL_Rect tile_size,Coordinate newpos) {
-	pos_px->x = pos_tiles->x * tile_size.w;
-	pos_px->y = pos_tiles->y * tile_size.h;
+	
 }
 
 void Character::move(Coordinate dir,const float accel,const float decel,const float max_vel,SDL_Rect map_size) {
@@ -344,8 +349,18 @@ void Character::move(Coordinate dir,const float accel,const float decel,const fl
 	}
 }
 
+void Character::stop_move() {
+	vel = ImVec2{ 0.0f,0.0f };
+}
+
 Stats& Character::get_stats() {
 	return stats;
+}
+
+void Character::force_move(Coordinate pos) {
+	*pos_px = pos;
+	pos_px_flt.x = (float)pos.x;
+	pos_px_flt.y = (float)pos.y;
 }
 
 bool Character::render() {
@@ -359,12 +374,13 @@ void Character::init_common(json data,SDL_Rect map_tile_size) {
 	SDL_Rect dim_source_sprite = SDL_Rect{ 0,0,data["dim_source_sprite"][0],data["dim_source_sprite"][1] };
 	Texture spritesheet(render_context);
 	SDL_Texture* spritesheet_texture;
+	Coordinate pos_tiles;
 	id = data["ID"];
 	map_id = data["map_id"];
 	vel = { 0.0,0.0 };
 
-	pos_tiles = std::make_shared<Coordinate>(data["pos"][0], data["pos"][1]);
-	pos_px = std::make_shared<Coordinate>(pos_tiles->x * map_tile_size.w, pos_tiles->y * map_tile_size.h);
+	pos_tiles = Coordinate(data["pos"][0], data["pos"][1]);
+	pos_px = std::make_shared<Coordinate>(pos_tiles.x * map_tile_size.w, pos_tiles.y * map_tile_size.h);
 	pos_px_flt = { (float)pos_px->x,(float)pos_px->y };
 	dim_sprite = SDL_Rect{ 0,0,data["dim_sprite"][0],data["dim_sprite"][1] };
 

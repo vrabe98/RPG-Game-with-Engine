@@ -24,5 +24,11 @@ void CustomGame::Play(){
 }
 
 void CustomGame::moveMain(Coordinate vel) {
+    Coordinate oldpos = *(db->get_mainchar_pos());
+    std::shared_ptr<Coordinate>& pos = db->get_mainchar_pos();
     db->get_main_char()->move(vel,char_accel,char_decel,max_vel,db->get_current_map_ptr()->get_px_size());
+    if (!db->get_current_map_ptr()->can_access()) {
+        db->get_main_char()->stop_move();
+        db->get_main_char()->force_move(oldpos);
+    }
 }
