@@ -46,9 +46,6 @@
     <ClCompile Include="Screen.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderable.h">
@@ -76,9 +73,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Screen.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

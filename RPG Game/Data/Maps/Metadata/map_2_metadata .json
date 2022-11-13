@@ -4,7 +4,7 @@
   "description": "Mapa pentru testare",
   "tileset_path": "Data\\Maps\\Tilesets\\test_tileset.png",
   "tilemap_path": "Data\\Maps\\Tilemaps\\map_2.txt",
-  "num_tiles":  [80, 40],
-  "dim_tile": [ 20, 20 ],
+  "num_tiles":  [80, 35],
+  "dim_tile": [ 25, 25 ],
   "dim_source_tile": [20,20]
 }

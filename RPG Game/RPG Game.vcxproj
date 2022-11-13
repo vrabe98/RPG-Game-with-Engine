@@ -152,6 +152,7 @@
     <ClInclude Include="CustomGame.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Characters\Character data\map_1_characters.json" />
     <None Include="Data\Maps\Metadata\map_1_metadata.json" />
     <None Include="Data\Maps\Metadata\map_2_metadata .json" />
     <None Include="Data\metadata.json" />

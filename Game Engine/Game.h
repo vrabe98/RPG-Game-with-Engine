@@ -4,8 +4,6 @@
 #include <filesystem>
 #include "Screen.h"
 
-#define MAP_NONE -1
-
 class Loader;
 class Database;
 
@@ -41,20 +39,25 @@ public:
 */
 
 class Database {
-	int current_map;
+	std::shared_ptr<Main_character> main_char;
 	std::shared_ptr<Coordinate> mainchar_pos;
 	std::unique_ptr<std::vector<std::shared_ptr<Map>>> maps;
 	std::shared_ptr<Map> current_map_ptr;
 	std::vector<std::shared_ptr<Screen>> screens;
+	std::unique_ptr<std::vector<std::shared_ptr<Character>>> npcs;
 public:
 	std::shared_ptr<Screen> getScreen(int);
 	std::shared_ptr<Map>& get_current_map_ptr();
+	std::shared_ptr<Main_character> get_main_char();
+	std::unique_ptr<std::vector<std::shared_ptr<Character>>>& get_npcs();
 	int get_current_map_nr();
 	void update_current_map();
-	void update_current_map(int);
-	std::shared_ptr<Coordinate>& get_mainchar_pos();	//PLACEHOLDER
+	void force_update_current_map(int);					//used for testing
+	std::shared_ptr<Coordinate>& get_mainchar_pos();
 	std::unique_ptr<std::vector<std::shared_ptr<Map>>>& get_maps_ptr();
 	void add_map(std::shared_ptr<Map>,uint16_t);
+	void set_main_char(std::shared_ptr<Main_character>);
+	void add_npc(std::shared_ptr<Character>);
 	Database();
 	friend class Loader;	//the Loader can access the private members
 	friend class Game;		//the custom game class won't inherit this
@@ -78,5 +81,6 @@ public:
 	void setActions(std::shared_ptr<actions_map>&);
 	void setDB(std::shared_ptr<Database>&);
 	void LoadUI(std::string,std::unique_ptr<RenderContext>&);
-	void LoadMaps(json, int, std::unique_ptr<RenderContext>&);
+	void LoadMaps(json, std::unique_ptr<RenderContext>&);
+	void LoadCharacters(std::string, std::unique_ptr<RenderContext>&);
 };

@@ -20,13 +20,13 @@ int Back_to_start() {
 
 int Inc_map() {
 	int current_map = db->get_current_map_nr();
-	db->update_current_map(++current_map);
+	db->force_update_current_map(++current_map);
 	return 1;
 }
 
 int Dec_map() {
 	int current_map = db->get_current_map_nr();
-	db->update_current_map(--current_map);
+	db->force_update_current_map(--current_map);
 	return 1;
 }
 

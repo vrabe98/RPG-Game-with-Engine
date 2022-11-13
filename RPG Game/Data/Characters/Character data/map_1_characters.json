@@ -1,0 +1,36 @@
+[
+  {
+    "type": "main",
+    "ID": 0,
+    "map_id": 0,
+    "pos": [ 5, 4 ],
+    "stats": {
+      "strength": 10,
+      "dexterity": 10,
+      "endurance": 10,
+      "intelligence": 10,
+      "luck": 10
+    },
+    "spritesheet_path": "Data\\Characters\\Sprite sheets\\sprite_main.png",
+    "dim_source_sprite": [20,40],
+    "dim_sprite": [20, 40]
+  },
+  {
+    "type": "NPC",
+    "ID": 1,
+    "name": "Dusmanu",
+    "description": "E dusmanu tau",
+    "map_id": 0,
+    "pos": [ 7, 8 ],
+    "stats": {
+      "strength": 10,
+      "dexterity": 10,
+      "endurance": 10,
+      "intelligence": 10,
+      "luck": 10
+    },
+    "spritesheet_path": "Data\\Characters\\Sprite sheets\\sprite_enemy.png",
+    "dim_source_sprite": [ 20, 40 ],
+    "dim_sprite": [20,40]
+  }
+]

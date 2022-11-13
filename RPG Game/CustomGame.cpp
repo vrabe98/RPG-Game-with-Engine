@@ -8,14 +8,21 @@ void CustomGame::Play(){
     while (!done)
     {
         SDL_Event event;
+        Coordinate dir = { 0,0 };
+        const uint8_t* keys = SDL_GetKeyboardState(NULL);
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
-                done = true;
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(render_context->window))
+            if (event.type==SDL_QUIT||(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(render_context->window)))
                 done = true;
         }
+        dir.y = -keys[SDL_SCANCODE_UP] + keys[SDL_SCANCODE_DOWN];
+        dir.x = -keys[SDL_SCANCODE_LEFT] + keys[SDL_SCANCODE_RIGHT];
+        moveMain(dir);
         if(!done) done=!db->getScreen(game_state)->Render();
     }
+}
+
+void CustomGame::moveMain(Coordinate vel) {
+    db->get_main_char()->move(vel,char_accel,char_decel,max_vel,db->get_current_map_ptr()->get_px_size());
 }

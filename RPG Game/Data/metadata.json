@@ -7,7 +7,7 @@
       "Tilemaps": "Data\\Maps\\Tilemaps",
       "Tilesets": "Data\\Maps\\Tilesets"
     },
-    "NPCs": "Data\\NPCs",
+    "Characters": "Data\\Characters\\Character data",
     "Items": "Data\\Items",
     "Quests": "Data\\Quests"
   }

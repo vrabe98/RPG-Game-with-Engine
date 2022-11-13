@@ -25,6 +25,15 @@
     <Filter Include="Resource Files\Maps\Tilemaps">
       <UniqueIdentifier>{80ff8909-4f07-49dc-bf74-27339c55ce73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Characters">
+      <UniqueIdentifier>{726d1150-59f1-438c-89e8-e51d08a57e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Characters\Character data">
+      <UniqueIdentifier>{42710ee2-1fac-4e6d-86bb-5f75262d8911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Characters\Sprite sheets">
+      <UniqueIdentifier>{86b9ecdc-2e81-4846-9147-6d86af1c3a66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +69,9 @@
     </None>
     <None Include="Data\Maps\Metadata\map_2_metadata .json">
       <Filter>Resource Files\Maps\Metadata</Filter>
+    </None>
+    <None Include="Data\Characters\Character data\map_1_characters.json">
+      <Filter>Resource Files\Characters\Character data</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

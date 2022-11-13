@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <memory>
+#include <chrono>
 #include "json.hpp"
 #include "RenderContext.h"
 
@@ -16,6 +17,8 @@ class Button;
 class Window;
 class Map_view;
 class Map;
+class Character;
+class Main_character;
 
 
 /*
@@ -39,16 +42,30 @@ public:
 */
 
 class Texture :public Renderable {
+protected:
 	SDL_Rect rnd_rect;
 	SDL_Texture* texture;
 public:
-	bool render() override;
+	bool render() final;
 	SDL_Texture* get_texture_ptr();
 	Texture(json, std::unique_ptr<RenderContext>&);
 	Texture(std::unique_ptr<RenderContext>&);
 	void create_empty(SDL_Rect);
 	SDL_Texture* read_from_file(std::string);
 	~Texture();
+};
+
+/*
+	Wrapper for the textures used to draw characters or objects,
+	with extra functionalities
+	CURRENTLY JUST A TEXTURE, EXTRA FUNCTIONALITIES WILL COME LATER
+*/
+
+class Sprite :public Texture {
+public:
+	void update_rnd_rect(SDL_Rect);
+	Sprite(std::unique_ptr<RenderContext>&);
+	Sprite(json, std::unique_ptr<RenderContext>&);
 };
 
 /*
@@ -85,10 +102,13 @@ public:
 
 class Map_view :public Renderable {
 	SDL_Rect viewport;
+	std::unique_ptr<std::vector<std::shared_ptr<Character>>>& npcs;
+	std::shared_ptr<Main_character> main_char;
 	std::shared_ptr<Map>& current_map;	//initialized through the constructor, resides in the database class
 	std::unique_ptr<std::vector<std::shared_ptr<Map>>>& maps;
 public:
-	Map_view(json, std::shared_ptr<Map>& current_map, std::unique_ptr<std::vector<std::shared_ptr<Map>>>&,std::unique_ptr<RenderContext>&);
+	Map_view(json, std::shared_ptr<Map>&, std::unique_ptr<std::vector<std::shared_ptr<Map>>>&, 
+		std::unique_ptr<std::vector<std::shared_ptr<Character>>>&,std::shared_ptr<Main_character>,std::unique_ptr<RenderContext>&);
 	bool render() override;
 };
 
@@ -109,9 +129,9 @@ public:
 
 class Map :public Renderable {
 	uint16_t id;								//allows more than 256 maps, used in ordering the maps
-	std::valarray<uint8_t> tilemap;
+	std::unique_ptr<std::valarray<uint8_t>> tilemap;
 	SDL_Rect viewport;
-	SDL_Rect num_tiles, dim_tile, dim_source_tile;
+	SDL_Rect num_tiles, dim_tile;
 	Texture texture;
 	std::string name, description;
 	std::shared_ptr<Coordinate> mainchar_pos;	/*the map is rendered based on the main character position
@@ -119,8 +139,54 @@ class Map :public Renderable {
 public:
 	void set_pos_ptr(std::shared_ptr<Coordinate>&);
 	void set_viewport(SDL_Rect);	//set the viewport from the map view before every render
+	SDL_Rect get_tile_dim();
+	SDL_Rect get_px_size();
 	uint16_t get_id();
 	bool render() override;
 	Map(json, std::unique_ptr<RenderContext>&);
 	~Map();
+};
+
+/*
+	Classes for in-game characters, methods defined in Character.cpp
+*/
+
+struct Stats {
+	int strength;
+	int dexterity;
+	int endurance;
+	int intelligence;
+	int luck;
+	Stats();
+	Stats(json);
+};
+
+class Character : public Renderable {
+protected:
+	int id, map_id;
+	std::string name, description;
+	Sprite sprite;		//will change the sprite system later, to allow characters to move
+	std::shared_ptr<Coordinate> pos_tiles, pos_px;
+	ImVec2 vel, pos_px_flt;
+	Stats stats;
+	SDL_Rect dim_sprite;	//valid for all sprites of character, makes sense to put it here
+	std::chrono::steady_clock::time_point last_render;
+public:
+	std::shared_ptr<Coordinate>& get_pos();
+	Stats& get_stats();
+	int get_current_map_id();
+	void set_current_map_id(int);
+	void init_common(json,SDL_Rect);		//avoids a lot of duplicate code
+	void change_map(int, SDL_Rect,Coordinate);
+	void move(Coordinate,const float,const float,const float,SDL_Rect);		//Coordinate(0,0) indicates deceleration
+	std::shared_ptr<Coordinate> get_tile();	//because tiles can have different sizes on different maps, converts from pixels to tiles
+	bool render() override;
+	Character(json, SDL_Rect, std::unique_ptr<RenderContext>&);
+	Character(std::unique_ptr<RenderContext>&);
+};
+
+class Main_character : public Character {
+
+public:
+	Main_character(json, SDL_Rect, std::unique_ptr<RenderContext>&);
 };
