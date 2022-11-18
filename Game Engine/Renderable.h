@@ -131,15 +131,13 @@ class Map :public Renderable {
 	uint16_t id;								//allows more than 256 maps, used in ordering the maps
 	std::unique_ptr<std::valarray<uint8_t>> tilemap;
 	std::vector<bool> tile_accessib;
-	SDL_Rect viewport;
-	SDL_Rect num_tiles, dim_tile;
+	SDL_Rect num_tiles, dim_tile, map_dim_pixels;
 	Texture texture;
 	std::string name, description;
 	std::shared_ptr<Coordinate> mainchar_pos;	/*the map is rendered based on the main character position
 											this implementation is a workaround as the render() method does not accept arguments*/
 public:
 	void set_pos_ptr(std::shared_ptr<Coordinate>&);
-	void set_viewport(SDL_Rect);	//set the viewport from the map view before every render
 	bool can_access();
 	SDL_Rect get_tile_dim();
 	SDL_Rect get_px_size();
@@ -169,6 +167,7 @@ protected:
 	std::string name, description;
 	Sprite sprite;		//will change the sprite system later, to allow characters to move
 	std::shared_ptr<Coordinate> pos_px;
+	Coordinate map_orig, pos_tiles;
 	ImVec2 vel, pos_px_flt;
 	Stats stats;
 	SDL_Rect dim_sprite;	//valid for all sprites of character, makes sense to put it here
@@ -178,9 +177,9 @@ public:
 	Stats& get_stats();
 	int get_current_map_id();
 	void set_current_map_id(int);
+	void set_map_orig(Coordinate);
 	void stop_move();
 	void init_common(json,SDL_Rect);		//avoids a lot of duplicate code
-	void change_map(int, SDL_Rect,Coordinate);
 	void move(Coordinate,const float,const float,const float,SDL_Rect);		//a coordinate of 0 indicates deceleration
 	void force_move(Coordinate);											//used to get the character back to the old position when it hits a "wall"
 	bool render() override;

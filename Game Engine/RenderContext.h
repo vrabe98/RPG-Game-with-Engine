@@ -14,6 +14,9 @@ struct RenderContext
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	ImFont* font;
+	SDL_Texture* canvas;
+	SDL_Rect* map_tile_size;
+	void create_empty_canvas(SDL_Rect);
 	RenderContext(std::string);
 	~RenderContext();
 };

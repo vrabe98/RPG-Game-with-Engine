@@ -1,6 +1,16 @@
 #include "RenderContext.h"
 
+void RenderContext::create_empty_canvas(SDL_Rect dim) {
+    canvas = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, dim.w, dim.h);
+    SDL_SetTextureBlendMode(canvas, SDL_BLENDMODE_BLEND);
+    if (canvas == nullptr) {
+        throw std::runtime_error(SDL_GetError());
+    }
+}
+
 RenderContext::RenderContext(std::string name) {
+    canvas = nullptr;
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         throw std::runtime_error(SDL_GetError());
@@ -37,5 +47,6 @@ RenderContext::~RenderContext()
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_DestroyTexture(canvas);
     SDL_Quit();
 }

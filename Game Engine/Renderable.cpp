@@ -171,12 +171,31 @@ Map_view::Map_view(json data, std::shared_ptr<Map>& current_map,
 }
 
 bool Map_view::render() {
-	current_map->set_viewport(viewport);
+	SDL_Rect src = { 0,0,0,0 };
+	SDL_Rect map_dim = current_map->get_px_size();
+	std::shared_ptr<Coordinate>& mainchar_pos = main_char->get_pos();
+
+	//Render the main character in the middle if possible
+	src.w = std::min(viewport.w, map_dim.w);
+	src.h = std::min(viewport.h, map_dim.h);
+	src.x = mainchar_pos->x-src.w/2;
+	src.y = mainchar_pos->y-src.h/2;
+
+	//Character too close to the map margins
+	if (src.x < 0) src.x = 0;
+	else if (src.x + src.w > map_dim.w) src.x = map_dim.w - src.w;
+	if (src.y < 0) src.y = 0;
+	else if (src.y + src.h > map_dim.h) src.y = map_dim.h - src.h;
+
+	SDL_SetRenderTarget(render_context->renderer, render_context->canvas);
 	current_map->render();
 	main_char->render();
 	for (auto& npc : *npcs) {		//NEED TO CHANGE THIS TO ONLY RENDER CHARACTERS ON THE CURRENT MAP
 		npc->render();
 	}
+	SDL_RenderSetViewport(render_context->renderer, &viewport);
+	SDL_SetRenderTarget(render_context->renderer, NULL);
+	SDL_RenderCopy(render_context->renderer, render_context->canvas, &src, NULL);
 	return false;
 }
 
@@ -188,14 +207,11 @@ void Map::set_pos_ptr(std::shared_ptr<Coordinate>& ptr) {
 	mainchar_pos = ptr;
 }
 
-void Map::set_viewport(SDL_Rect viewport) {
-	this->viewport = viewport;
-}
-
 bool Map::can_access() {
 	Coordinate pos = *mainchar_pos;
 	pos.x = pos.x / dim_tile.w;
 	pos.y = pos.y / dim_tile.h;
+	if (pos.x > (num_tiles.w-1) || pos.y > (num_tiles.h-1)) return false;
 	return tile_accessib[(*tilemap)[pos.y * num_tiles.w + pos.x]];
 }
 
@@ -212,17 +228,13 @@ or the whole map along the dimensions smaller than the viewport size
 I HAVE TO MODIFY THE DEPENDENCE ON THE CHARACTER'S POSITION!
 */
 bool Map::render() {
-	SDL_Rect src = {0,0,0,0};
-	SDL_Rect dest = { 0,0,0,0 };
-
-	src.w = std::min(num_tiles.w * dim_tile.w, viewport.w);
-	src.h = std::min(num_tiles.h * dim_tile.h, viewport.h);
-
-	dest.w = src.w;
-	dest.h = src.h;
-
-	SDL_RenderSetViewport(render_context->renderer, &viewport);
-	SDL_RenderCopy(render_context->renderer, texture.get_texture_ptr(), &src,&dest);
+	SDL_Rect canvas_size = { 0,0,0,0 };
+	if(render_context->canvas!=nullptr) SDL_QueryTexture(render_context->canvas, NULL, NULL, &canvas_size.w, &canvas_size.h);
+	if (render_context->canvas == nullptr || map_dim_pixels.w != canvas_size.w || map_dim_pixels.h != canvas_size.h) {
+		if (render_context->canvas != nullptr) SDL_DestroyTexture(render_context->canvas);
+		render_context->create_empty_canvas(map_dim_pixels);
+	}
+	SDL_RenderCopy(render_context->renderer, texture.get_texture_ptr(), NULL,NULL);
 	return false;
 }
 
@@ -231,7 +243,7 @@ uint16_t Map::get_id() {
 }
 
 Map::Map(json metadata, std::unique_ptr<RenderContext>& context) :Renderable(context),texture(context) {
-	SDL_Rect map_dim_pixels, dim_source_tile;
+	SDL_Rect dim_source_tile;
 	SDL_Texture* tex;
 	std::ifstream tilemap_file(metadata["tilemap_path"].get<std::string>());
 	id = metadata["ID"];
@@ -308,8 +320,8 @@ void Character::set_current_map_id(int map_id) {
 	this->map_id = map_id;
 }
 
-void Character::change_map(int map_id, SDL_Rect tile_size,Coordinate newpos) {
-	
+void Character::set_map_orig(Coordinate orig) {
+	this->map_orig = orig;
 }
 
 void Character::move(Coordinate dir,const float accel,const float decel,const float max_vel,SDL_Rect map_size) {
@@ -318,29 +330,29 @@ void Character::move(Coordinate dir,const float accel,const float decel,const fl
 		std::chrono::duration elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_render);
 		ImVec2 newpos, oldvel = vel;
 
-		if (dir.x != 0) vel.x += (float)dir.x * accel * elapsed.count();
+		if (dir.x != 0) vel.x += (float)dir.x * accel * elapsed.count();	//update velocity
 		else vel.x = vel.x - sgn(vel.x) * decel * elapsed.count();
 
 		if (sgn(oldvel.x)!=0&&sgn(vel.x)!=sgn(oldvel.x)) vel.x = 0.0;		//clamp velocity
 		else if (sgn(vel.x) * vel.x >= max_vel) vel.x = sgn(vel.x) * max_vel;
 
-		if (dir.y != 0) vel.y += (float)dir.y * accel * elapsed.count();
+		if (dir.y != 0) vel.y += (float)dir.y * accel * elapsed.count();	//update velocity
 		else vel.y = vel.y - sgn(vel.y) * decel * elapsed.count();
 
-		if (sgn(oldvel.y)&&sgn(vel.y)!=sgn(oldvel.y)) vel.y = 0.0;		//clamp velocity
+		if (sgn(oldvel.y)&&sgn(vel.y)!=sgn(oldvel.y)) vel.y = 0.0;			//clamp velocity
 		else if (sgn(vel.y) * vel.y >= max_vel) vel.y = sgn(vel.y) * max_vel;
 
 		newpos = { pos_px_flt.x + vel.x*elapsed.count(),pos_px_flt.y + vel.y*elapsed.count()};
 
 		if (newpos.x >= 0.0 && newpos.x <= (float)map_size.w) pos_px_flt.x = newpos.x;
 		else {
-			vel.x = 0.0;				//we stop the character
+			vel.x = 0.0;				//stop the character
 			if (newpos.x < 0.0) pos_px_flt.x = 0.0;
 			else if (newpos.x > map_size.x) pos_px_flt.x = (float)map_size.w;
 		}
 		if (newpos.y >= 0.0 && newpos.y <= (float)map_size.w) pos_px_flt.y = newpos.y;
 		else {
-			vel.y = 0.0;				//we stop the character
+			vel.y = 0.0;				//stop the character
 			if (newpos.y < 0) pos_px_flt.y = 0.0;
 			else if (newpos.y > map_size.y) pos_px_flt.y = (float)map_size.w;
 		}
@@ -374,9 +386,9 @@ void Character::init_common(json data,SDL_Rect map_tile_size) {
 	SDL_Rect dim_source_sprite = SDL_Rect{ 0,0,data["dim_source_sprite"][0],data["dim_source_sprite"][1] };
 	Texture spritesheet(render_context);
 	SDL_Texture* spritesheet_texture;
-	Coordinate pos_tiles;
 	id = data["ID"];
 	map_id = data["map_id"];
+	stats = Stats(data["stats"]);
 	vel = { 0.0,0.0 };
 
 	pos_tiles = Coordinate(data["pos"][0], data["pos"][1]);
@@ -397,7 +409,7 @@ void Character::init_common(json data,SDL_Rect map_tile_size) {
 	SDL_SetRenderTarget(render_context->renderer, NULL);
 }
 
-Character::Character(json data, SDL_Rect map_tile_size,std::unique_ptr<RenderContext>& context) :Renderable(context), stats(data["stats"]), sprite(context) {
+Character::Character(json data, SDL_Rect map_tile_size,std::unique_ptr<RenderContext>& context) :Renderable(context), sprite(context) {
 	init_common(data, map_tile_size);
 	name = data["name"].get<std::string>();
 	description = data["description"].get<std::string>();
@@ -409,5 +421,4 @@ Character::Character(std::unique_ptr<RenderContext>& context) :Renderable(contex
 
 Main_character::Main_character(json data, SDL_Rect map_tile_size,std::unique_ptr<RenderContext>& context):Character(context) {
 	init_common(data,map_tile_size);
-	stats = Stats(data["stats"]);
 }
