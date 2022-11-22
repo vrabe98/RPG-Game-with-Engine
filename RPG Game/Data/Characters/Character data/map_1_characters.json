@@ -12,6 +12,20 @@
       "luck": 10
     },
     "spritesheet_path": "Data\\Characters\\Sprite sheets\\sprite_main.png",
+    "sprite_data": [
+      {
+        "state": "IDLE",
+        "row": 0,
+        "num_sprites": 4,
+        "frames": 8
+      },
+      {
+        "state": "WALK_GENERIC",
+        "row": 1,
+        "num_sprites": 8,
+        "frames": 8
+      }
+    ],
     "dim_source_sprite": [20,40],
     "dim_sprite": [20, 40]
   },
@@ -30,7 +44,21 @@
       "luck": 10
     },
     "spritesheet_path": "Data\\Characters\\Sprite sheets\\sprite_enemy.png",
+    "sprite_data": [
+      {
+        "state": "IDLE",
+        "row": 0,
+        "num_sprites": 1,
+        "frames": 8
+      },
+      {
+        "state": "WALK_GENERIC",
+        "row": 1,
+        "num_sprites": 1,
+        "frames": 8
+      }
+    ],
     "dim_source_sprite": [ 20, 40 ],
-    "dim_sprite": [20,40]
+    "dim_sprite": [ 20, 40 ]
   }
 ]

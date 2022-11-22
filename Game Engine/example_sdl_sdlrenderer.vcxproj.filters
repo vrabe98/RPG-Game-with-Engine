@@ -75,6 +75,9 @@
     <ClInclude Include="Screen.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="CircularList.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.txt" />

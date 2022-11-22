@@ -3,9 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <memory>
-#include <chrono>
 #include "json.hpp"
+#include "CircularList.h"
 #include "RenderContext.h"
 
 using json = nlohmann::json;
@@ -46,7 +45,7 @@ protected:
 	SDL_Rect rnd_rect;
 	SDL_Texture* texture;
 public:
-	bool render() final;
+	bool render();
 	SDL_Texture* get_texture_ptr();
 	Texture(json, std::unique_ptr<RenderContext>&);
 	Texture(std::unique_ptr<RenderContext>&);
@@ -62,8 +61,14 @@ public:
 */
 
 class Sprite :public Texture {
+	int num_frames;
+	bool flip;
 public:
 	void update_rnd_rect(SDL_Rect);
+	void set_num_frames(int);
+	int get_num_frames();
+	void flip_sprite();
+	bool render() final;
 	Sprite(std::unique_ptr<RenderContext>&);
 	Sprite(json, std::unique_ptr<RenderContext>&);
 };
@@ -151,6 +156,17 @@ public:
 	Classes for in-game characters, methods defined in Character.cpp
 */
 
+#define MIN_STATES 6		//number of basic animation states
+#define IDLE 0				//HAS TO EXIST
+#define WALK_W 1
+#define WALK_E 2
+#define WALK_N 3
+#define WALK_S 4
+#define WALK_GENERIC 5		/*used as fallback when no directional walking animation is specified,
+							sprites will be reoriented if possible,
+							has to face left,
+							only really makes sense for left-right movement*/
+
 struct Stats {
 	int strength;
 	int dexterity;
@@ -163,23 +179,25 @@ struct Stats {
 
 class Character : public Renderable {
 protected:
-	int id, map_id;
+	int id, map_id, state,sprite_cnt;		//state and sprite_cnt used for sprite rendering
 	std::string name, description;
-	Sprite sprite;		//will change the sprite system later, to allow characters to move
+	std::shared_ptr<Node<Sprite>> sprite;		//pointer to the current sprite list node
+	std::vector<CircularList<Sprite>> sprites;	//each list corresponds to a state
 	std::shared_ptr<Coordinate> pos_px;
 	Coordinate map_orig, pos_tiles;
 	ImVec2 vel, pos_px_flt;
 	Stats stats;
 	SDL_Rect dim_sprite;	//valid for all sprites of character, makes sense to put it here
-	std::chrono::steady_clock::time_point last_render;
 public:
 	std::shared_ptr<Coordinate>& get_pos();
 	Stats& get_stats();
 	int get_current_map_id();
 	void set_current_map_id(int);
 	void set_map_orig(Coordinate);
+	void set_state(int);
 	void stop_move();
 	void init_common(json,SDL_Rect);		//avoids a lot of duplicate code
+	void init_sprites(json,SDL_Texture*,SDL_Rect,SDL_Rect);
 	void move(Coordinate,const float,const float,const float,SDL_Rect);		//a coordinate of 0 indicates deceleration
 	void force_move(Coordinate);											//used to get the character back to the old position when it hits a "wall"
 	bool render() override;

@@ -5,6 +5,7 @@ std::shared_ptr<Database> db = std::make_shared<Database>();
 
 void CustomGame::Play(){
     bool done = false;
+    std::chrono::steady_clock::time_point last_render=std::chrono::steady_clock::now(), now;
     while (!done)
     {
         SDL_Event event;
@@ -20,6 +21,9 @@ void CustomGame::Play(){
         dir.x = -keys[SDL_SCANCODE_LEFT] + keys[SDL_SCANCODE_RIGHT];
         moveMain(dir);
         if(!done) done=!db->getScreen(game_state)->Render();
+        now= std::chrono::steady_clock::now();
+        render_context->elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_render);
+        last_render = now;
     }
 }
 

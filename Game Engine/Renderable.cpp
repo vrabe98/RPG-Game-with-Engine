@@ -144,16 +144,37 @@ Texture::~Texture(){
 	Sprite class method definitions
 */
 
+bool Sprite::render() {
+	if(flip) SDL_RenderCopyEx(render_context->renderer, texture, NULL, &rnd_rect,0.0,NULL,SDL_FLIP_HORIZONTAL);
+	else SDL_RenderCopy(render_context->renderer, texture, NULL, &rnd_rect);
+	flip = false;
+	return false;
+}
+
 void Sprite::update_rnd_rect(SDL_Rect rnd_rect) {
 	this->rnd_rect = rnd_rect;
 }
 
+int Sprite::get_num_frames() {
+	return num_frames;
+}
+
+void Sprite::set_num_frames(int num_frames) {
+	this->num_frames = num_frames;
+}
+
+void Sprite::flip_sprite() {
+	flip = true;
+}
+
 Sprite::Sprite(json data, std::unique_ptr<RenderContext>& context):Texture(context) {
-	
+	num_frames = 0;
+	flip = false;
 }
 
 Sprite::Sprite(std::unique_ptr<RenderContext>& context) :Texture(context) {
-
+	num_frames = 0;
+	flip = false;
 }
 
 /*
@@ -191,7 +212,9 @@ bool Map_view::render() {
 	current_map->render();
 	main_char->render();
 	for (auto& npc : *npcs) {		//NEED TO CHANGE THIS TO ONLY RENDER CHARACTERS ON THE CURRENT MAP
-		npc->render();
+		if (npc->get_current_map_id() == current_map->get_id()) {
+			npc->render();
+		}
 	}
 	SDL_RenderSetViewport(render_context->renderer, &viewport);
 	SDL_SetRenderTarget(render_context->renderer, NULL);
@@ -305,7 +328,7 @@ Stats::Stats(json data) {
 }
 
 Stats::Stats() {
-
+	strength = dexterity = endurance = intelligence = luck = 0;
 }
 
 std::shared_ptr<Coordinate>& Character::get_pos() {
@@ -326,23 +349,21 @@ void Character::set_map_orig(Coordinate orig) {
 
 void Character::move(Coordinate dir,const float accel,const float decel,const float max_vel,SDL_Rect map_size) {
 	if (dir.x != 0 || dir.y != 0 || vel.x != 0 || vel.y != 0) {				//only update position when needed
-		std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-		std::chrono::duration elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_render);
 		ImVec2 newpos, oldvel = vel;
 
-		if (dir.x != 0) vel.x += (float)dir.x * accel * elapsed.count();	//update velocity
-		else vel.x = vel.x - sgn(vel.x) * decel * elapsed.count();
+		if (dir.x != 0) vel.x += (float)dir.x * accel * render_context->elapsed.count();	//update velocity
+		else vel.x = vel.x - sgn(vel.x) * decel * render_context->elapsed.count();
 
 		if (sgn(oldvel.x)!=0&&sgn(vel.x)!=sgn(oldvel.x)) vel.x = 0.0;		//clamp velocity
 		else if (sgn(vel.x) * vel.x >= max_vel) vel.x = sgn(vel.x) * max_vel;
 
-		if (dir.y != 0) vel.y += (float)dir.y * accel * elapsed.count();	//update velocity
-		else vel.y = vel.y - sgn(vel.y) * decel * elapsed.count();
+		if (dir.y != 0) vel.y += (float)dir.y * accel * render_context->elapsed.count();	//update velocity
+		else vel.y = vel.y - sgn(vel.y) * decel * render_context->elapsed.count();
 
 		if (sgn(oldvel.y)&&sgn(vel.y)!=sgn(oldvel.y)) vel.y = 0.0;			//clamp velocity
 		else if (sgn(vel.y) * vel.y >= max_vel) vel.y = sgn(vel.y) * max_vel;
 
-		newpos = { pos_px_flt.x + vel.x*elapsed.count(),pos_px_flt.y + vel.y*elapsed.count()};
+		newpos = { pos_px_flt.x + vel.x*render_context->elapsed.count(),pos_px_flt.y + vel.y*render_context->elapsed.count()};
 
 		if (newpos.x >= 0.0 && newpos.x <= (float)map_size.w) pos_px_flt.x = newpos.x;
 		else {
@@ -361,6 +382,11 @@ void Character::move(Coordinate dir,const float accel,const float decel,const fl
 	}
 }
 
+void Character::set_state(int state) {
+	this->state = state;
+	sprite_cnt = 0;
+}
+
 void Character::stop_move() {
 	vel = ImVec2{ 0.0f,0.0f };
 }
@@ -376,9 +402,25 @@ void Character::force_move(Coordinate pos) {
 }
 
 bool Character::render() {
-	last_render = std::chrono::steady_clock::now();
-	sprite.update_rnd_rect(SDL_Rect{ pos_px->x - dim_sprite.w / 2,pos_px->y - dim_sprite.h,dim_sprite.w,dim_sprite.h });
-	sprite.render();
+	int old_state = state;
+	if (vel.x > 0) state = WALK_E;
+	else if (vel.x < 0) state = WALK_W;
+	else if (vel.y > 0) state = WALK_S;
+	else if (vel.y < 0) state = WALK_N;
+	else state = IDLE;
+	if (sprites[state].isempty() && (state == WALK_E || state == WALK_W || state == WALK_S || state == WALK_N)) state = WALK_GENERIC;
+	
+	if (state != old_state) {
+		sprite_cnt = 0;	//reset animation
+		sprite = sprites[state].get_last()->get_next();		//get first element of the list
+	}
+	else if (++sprite_cnt >= sprite->get_data()->get_num_frames()) {		//progress the animation
+		sprite_cnt = 0;
+		sprite = sprite->get_next();
+	}
+	sprite->get_data()->update_rnd_rect(SDL_Rect{ pos_px->x - dim_sprite.w / 2,pos_px->y - dim_sprite.h,dim_sprite.w,dim_sprite.h });
+	if (state == WALK_GENERIC&&vel.x>0) sprite->get_data()->flip_sprite();
+	sprite->get_data()->render();
 	return false;
 }
 
@@ -391,31 +433,62 @@ void Character::init_common(json data,SDL_Rect map_tile_size) {
 	stats = Stats(data["stats"]);
 	vel = { 0.0,0.0 };
 
+	state = IDLE;
+	sprite_cnt = 0;
+	sprites.resize(MIN_STATES);
+
 	pos_tiles = Coordinate(data["pos"][0], data["pos"][1]);
 	pos_px = std::make_shared<Coordinate>(pos_tiles.x * map_tile_size.w, pos_tiles.y * map_tile_size.h);
 	pos_px_flt = { (float)pos_px->x,(float)pos_px->y };
 	dim_sprite = SDL_Rect{ 0,0,data["dim_sprite"][0],data["dim_sprite"][1] };
 
-	//read the source spritesheet but rescale the sprite to the source size just in case, maybe more uses later for this
-	sprite.create_empty(dim_source_sprite);
 	spritesheet_texture = spritesheet.read_from_file(data["spritesheet_path"].get<std::string>());
 
-	SDL_SetRenderTarget(render_context->renderer, sprite.get_texture_ptr());
-	SDL_RenderCopy(render_context->renderer, spritesheet_texture, NULL, NULL);
-
-	sprite.update_rnd_rect(SDL_Rect{ pos_px->x - dim_sprite.w / 2,pos_px->y - dim_sprite.h,dim_sprite.w,dim_sprite.h });  //sprite bottom centered
-	//on character position
+	init_sprites(data["sprite_data"], spritesheet_texture, dim_sprite, dim_source_sprite);
 
 	SDL_SetRenderTarget(render_context->renderer, NULL);
 }
 
-Character::Character(json data, SDL_Rect map_tile_size,std::unique_ptr<RenderContext>& context) :Renderable(context), sprite(context) {
+void Character::init_sprites(json data,SDL_Texture* spritesheet,SDL_Rect dim_sprite,SDL_Rect dim_source_sprite) {
+	for (auto& animation : data) {
+		int type = -1;
+		std::string type_name = animation["state"].get<std::string>();
+		//convert the string to enum, can't find another more elegant way
+		if (type_name == "IDLE") type = IDLE;
+		else if (type_name == "WALK_W") type = WALK_W;
+		else if (type_name == "WALK_E") type = WALK_E;
+		else if (type_name == "WALK_N") type = WALK_N;
+		else if (type_name == "WALK_S") type = WALK_S;
+		else if (type_name == "WALK_GENERIC") type = WALK_GENERIC;
+
+		if (type != -1) {
+			for (int i = 0; i < animation["num_sprites"]; i++) {
+				std::shared_ptr<Sprite> new_sprite = std::make_shared<Sprite>(render_context);
+				SDL_Texture* texture;
+				new_sprite->create_empty(dim_sprite);
+				dim_source_sprite.x = i * dim_source_sprite.w;			//reuse the variable to define the clipped sprite coordinates
+				dim_source_sprite.y = type * dim_source_sprite.h;
+				texture = new_sprite->get_texture_ptr();
+				SDL_SetRenderTarget(render_context->renderer, texture);
+				SDL_RenderCopy(render_context->renderer, spritesheet, &dim_source_sprite, NULL);
+				new_sprite->set_num_frames(animation["frames"]);
+				sprites[type].add_back(new_sprite);
+			}
+		}
+		else {
+			throw std::runtime_error("Error reading sprite for "+name+"!");
+		}
+	}
+	sprite = sprites[state].get_last()->get_next();
+}
+
+Character::Character(json data, SDL_Rect map_tile_size,std::unique_ptr<RenderContext>& context) :Renderable(context) {
 	init_common(data, map_tile_size);
 	name = data["name"].get<std::string>();
 	description = data["description"].get<std::string>();
 }
 
-Character::Character(std::unique_ptr<RenderContext>& context) :Renderable(context), sprite(context) {
+Character::Character(std::unique_ptr<RenderContext>& context) :Renderable(context){
 	
 }
 

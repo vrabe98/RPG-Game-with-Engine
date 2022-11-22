@@ -181,6 +181,7 @@
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="CircularList.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.txt" />
