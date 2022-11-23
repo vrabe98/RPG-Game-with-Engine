@@ -1,7 +1,7 @@
 #pragma once
 #include <Game.h>
 
-const float char_accel = 0.005f, char_decel = 0.0025f, max_vel = 0.15f;
+const float char_accel = 0.003f, char_decel = 0.0015f, max_vel = 0.055f;
 /*
 	Custom Game class that provides an implementation of the Play() method.
 */

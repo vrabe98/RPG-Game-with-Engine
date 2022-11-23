@@ -52,7 +52,7 @@ public:
 	std::unique_ptr<std::vector<std::shared_ptr<Character>>>& get_npcs();
 	int get_current_map_nr();
 	void update_current_map();
-	void force_update_current_map(int);					//used for testing
+	void force_update_current_map(uint16_t);					//used for testing
 	std::shared_ptr<Coordinate>& get_mainchar_pos();
 	std::unique_ptr<std::vector<std::shared_ptr<Map>>>& get_maps_ptr();
 	void add_map(std::shared_ptr<Map>,uint16_t);

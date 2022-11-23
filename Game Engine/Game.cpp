@@ -147,7 +147,7 @@ std::unique_ptr<std::vector<std::shared_ptr<Character>>>& Database::get_npcs(){
     return npcs;
 }
 
-void Database::force_update_current_map(int nr) {
+void Database::force_update_current_map(uint16_t nr) {
     if (nr >= 0 && nr < maps->size()) {
         main_char->set_current_map_id(nr);
         current_map_ptr = (*maps)[nr];

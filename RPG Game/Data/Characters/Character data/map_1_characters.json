@@ -48,14 +48,14 @@
       {
         "state": "IDLE",
         "row": 0,
-        "num_sprites": 1,
-        "frames": 8
+        "num_sprites": 3,
+        "frames": 20
       },
       {
         "state": "WALK_GENERIC",
         "row": 1,
         "num_sprites": 1,
-        "frames": 8
+        "frames": 20
       }
     ],
     "dim_source_sprite": [ 20, 40 ],

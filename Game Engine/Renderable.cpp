@@ -211,7 +211,7 @@ bool Map_view::render() {
 	SDL_SetRenderTarget(render_context->renderer, render_context->canvas);
 	current_map->render();
 	main_char->render();
-	for (auto& npc : *npcs) {		//NEED TO CHANGE THIS TO ONLY RENDER CHARACTERS ON THE CURRENT MAP
+	for (auto& npc : *npcs) {
 		if (npc->get_current_map_id() == current_map->get_id()) {
 			npc->render();
 		}
@@ -248,7 +248,6 @@ SDL_Rect Map::get_px_size() {
 
 /*Renders in the viewport's upper left corner, whatever fits from the map
 or the whole map along the dimensions smaller than the viewport size
-I HAVE TO MODIFY THE DEPENDENCE ON THE CHARACTER'S POSITION!
 */
 bool Map::render() {
 	SDL_Rect canvas_size = { 0,0,0,0 };
@@ -308,6 +307,7 @@ Map::Map(json metadata, std::unique_ptr<RenderContext>& context) :Renderable(con
 	//read tile accessibility data
 	for (auto& tile_acc : metadata["tile_accessibility"]) tile_accessib.push_back(tile_acc);
 
+	SDL_DestroyTexture(tileset_texture);
 	SDL_SetRenderTarget(context->renderer, NULL);
 }
 
@@ -339,7 +339,7 @@ int Character::get_current_map_id() {
 	return map_id;
 }
 
-void Character::set_current_map_id(int map_id) {
+void Character::set_current_map_id(uint16_t map_id) {
 	this->map_id = map_id;
 }
 
@@ -445,6 +445,7 @@ void Character::init_common(json data,SDL_Rect map_tile_size) {
 	spritesheet_texture = spritesheet.read_from_file(data["spritesheet_path"].get<std::string>());
 
 	init_sprites(data["sprite_data"], spritesheet_texture, dim_sprite, dim_source_sprite);
+	SDL_DestroyTexture(spritesheet_texture);
 
 	SDL_SetRenderTarget(render_context->renderer, NULL);
 }

@@ -179,7 +179,8 @@ struct Stats {
 
 class Character : public Renderable {
 protected:
-	int id, map_id, state,sprite_cnt;		//state and sprite_cnt used for sprite rendering
+	int id, state,sprite_cnt;		//state and sprite_cnt used for sprite rendering
+	uint16_t map_id;
 	std::string name, description;
 	std::shared_ptr<Node<Sprite>> sprite;		//pointer to the current sprite list node
 	std::vector<CircularList<Sprite>> sprites;	//each list corresponds to a state
@@ -192,7 +193,7 @@ public:
 	std::shared_ptr<Coordinate>& get_pos();
 	Stats& get_stats();
 	int get_current_map_id();
-	void set_current_map_id(int);
+	void set_current_map_id(uint16_t);
 	void set_map_orig(Coordinate);
 	void set_state(int);
 	void stop_move();
