@@ -408,8 +408,8 @@ bool Character::render() {
 	else if (vel.y > 0) state = WALK_S;
 	else if (vel.y < 0) state = WALK_N;
 	else state = IDLE;
-	if (sprites[state].isempty() && (state == WALK_E || state == WALK_W || state == WALK_S || state == WALK_N)) state = WALK_GENERIC;
-	
+	if (sprites[state].isempty()&&(state==WALK_N||state==WALK_S||state==WALK_E||state==WALK_W)) state = WALK_GENERIC;
+
 	if (state != old_state) {
 		sprite_cnt = 0;	//reset animation
 		sprite = sprites[state].get_last()->get_next();		//get first element of the list
