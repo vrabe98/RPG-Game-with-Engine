@@ -28,12 +28,6 @@
     <ClCompile Include="imgui_draw.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_impl_sdl.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_sdlrenderer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -44,6 +38,12 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Screen.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_sdl2.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_sdlrenderer2.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,12 +60,6 @@
     <ClInclude Include="RenderContext.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="imgui_impl_sdl.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_sdlrenderer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="imgui_internal.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -76,6 +70,12 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CircularList.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_sdl2.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_sdlrenderer2.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

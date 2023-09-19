@@ -10,7 +10,7 @@ void Screen::AddRenderable(std::shared_ptr<Renderable> rnd){
 
 bool Screen::Render(){
 	bool act = true;
-	ImGui_ImplSDLRenderer_NewFrame();
+	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
@@ -26,7 +26,7 @@ bool Screen::Render(){
 		rnd->render();
 	}
 
-	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 	SDL_RenderPresent(render_context->renderer);
 	return act;
 }
