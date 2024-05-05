@@ -9,8 +9,7 @@ int sgn(float x) {
 }
 
 int Renderable::act() {
-	if(action) return action();
-	return 1;
+	return (action) ? action() : 1;
 }
 
 /*
