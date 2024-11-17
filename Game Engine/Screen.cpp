@@ -26,7 +26,7 @@ bool Screen::Render(){
 		rnd->render();
 	}
 
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),render_context->renderer);
 	SDL_RenderPresent(render_context->renderer);
 	return act;
 }
